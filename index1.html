@@ -289,12 +289,16 @@
                         <span class="price" id="subtotalMaterials">0 FCFA</span>
                     </div>
                     <div class="total-row">
-                        <span>Main d'œuvre:</span>
-                        <span class="price" id="laborCost">250 000 FCFA</span>
+                        <span>Droit de raccordement:</span>
+                        <span class="price" id="connectionFee">670 000 FCFA</span>
                     </div>
                     <div class="total-row">
-                        <span>Droit de connexion:</span>
-                        <span class="price" id="connectionFee">600 000 FCFA</span>
+                        <span>Main d'œuvre:</span>
+                        <span class="price" id="laborCost">200 000 FCFA</span>
+                    </div>
+                    <div class="total-row">
+                        <span>CIE:</span>
+                        <span class="price" id="cieFee">150 000 FCFA</span>
                     </div>
                     <div class="total-row">
                         <span>TOTAL GÉNÉRAL:</span>
@@ -310,23 +314,24 @@
     </div>
 
     <script>
-        // Initial data based on your provided information
+        // Initial data based on your handwritten invoice
         const initialItems = [
-            { designation: "Support MT 9/650", quantity: 3, unitPrice: 130000 },
-            { designation: "Support MT 9/200", quantity: 1, unitPrice: 100000 },
-            { designation: "Pince ancrage", quantity: 5, unitPrice: 3500 },
-            { designation: "Pince alignement", quantity: 2, unitPrice: 2000 },
-            { designation: "Raccord", quantity: 6, unitPrice: 1500 },
-            { designation: "Lampe complète", quantity: 2, unitPrice: 60000 },
-            { designation: "Grue", quantity: 1, unitPrice: 200000 },
-            { designation: "Boulon", quantity: 5, unitPrice: 1500 },
-            { designation: "CO", quantity: 2, unitPrice: 1500 },
-            { designation: "Câble 3x70 (m)", quantity: 140, unitPrice: 3000 }
+            { designation: "Support BT 9/650", quantity: 5, unitPrice: 125000 },
+            { designation: "Support BT 9/200", quantity: 1, unitPrice: 100000 },
+            { designation: "Cable 3x70", quantity: 172, unitPrice: 4000 },
+            { designation: "Location Grue", quantity: 1, unitPrice: 250000 },
+            { designation: "Pinces ancrage", quantity: 11, unitPrice: 3000 },
+            { designation: "Pinces d'alignement", quantity: 4, unitPrice: 2500 },
+            { designation: "Raccord", quantity: 8, unitPrice: 1500 },
+            { designation: "CO", quantity: 6, unitPrice: 2000 },
+            { designation: "Boulons", quantity: 5, unitPrice: 1500 },
+            { designation: "Sable, Ciment d'ancrage", quantity: 1, unitPrice: 100000 },
+            { designation: "Lampes Complète 150W", quantity: 2, unitPrice: 160000 }
         ];
 
         let items = [...initialItems];
-        const laborCost = 250000;
-        const connectionFee = 600000;
+        const laborCost = 200000; // Main d'œuvre
+        const connectionFee = 150000; // CIE fee
 
         function formatNumber(num) {
             return new Intl.NumberFormat('fr-FR').format(num);
@@ -372,7 +377,8 @@
 
         function calculateTotals() {
             const subtotalMaterials = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
-            const grandTotal = subtotalMaterials + laborCost + connectionFee;
+            const connectionRights = 670000; // Droit de raccordement
+            const grandTotal = subtotalMaterials + laborCost + connectionRights + connectionFee;
 
             document.getElementById('subtotalMaterials').textContent = formatNumber(subtotalMaterials) + ' FCFA';
             document.getElementById('grandTotal').textContent = formatNumber(grandTotal) + ' FCFA';
