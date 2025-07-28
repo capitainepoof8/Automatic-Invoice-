@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Factures Automatique</title>
+    <style>
+        /* Basic CSS for styling the invoice */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .invoice-container {
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+            text-align: center;
+        }
+        .header-info, .contact-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: calc(100% - 10px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="number"] {
+            text-align: right;
+        }
+        .total-price, .fixed-price-cell {
+            text-align: right;
+            font-weight: bold;
+        }
+        .grand-total-row {
+            background-color: #e6f7ff;
+        }
+        .grand-total-row td {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .action-buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .action-buttons button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+        .action-buttons button:hover {
+            background-color: #0056b3;
+        }
+        .remove-item-btn {
+            background-color: #dc3545;
+            padding: 5px 10px;
+            margin-left: 10px;
+            font-size: 0.8em;
+        }
+        .remove-item-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="header-info">
+            <h1>DEVIS</h1>
+            <h2>INSTALLATION D’UN RÉSEAU ÉLECTRIQUE BT</h2>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>DÉSIGNATION</th>
+                    <th>QUANTITÉ</th>
+                    <th>PRIX UNIT. (FCFA)</th>
+                    <th>PRIX TOTAL (FCFA)</th>
+                    <th></th> </tr>
+            </thead>
+            <tbody id="invoice-items-body">
+                <tr class="invoice-item">
+                    <td><input type="text" class="designation" value="Support MT 9/650"></td>
+                    <td><input type="number" class="quantity" value="3" min="0" oninput="updateRow(this)"></td>
+                    <td><input type="number" class="unit-price" value="130000" min="0" oninput="updateRow(this)"></td>
+                    <td class="total-price">390000</td>
+                    <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+                </tr>
+                <tr class="invoice-item">
+                    <td><input type="text" class="designation" value="Support MT 9/200"></td>
+                    <td><input type="number" class="quantity" value="1" min="0" oninput="updateRow(this)"></td>
+                    <td><input type="number" class="unit-price" value="100000" min="0" oninput="updateRow(this)"></td>
+                    <td class="total-price">100000</td>
+                    <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+                </tr>
+                <tr class="invoice-item">
+                    <td><input type="text" class="designation" value="Pince ancrage"></td>
+                    <td><input type="number" class="quantity" value="5" min="0" oninput="updateRow(this)"></td>
+                    <td><input type="number" class="unit-price" value="3500" min="0" oninput="updateRow(this)"></td>
+                    <td class="total-price">17500</td>
+                    <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+                </tr>
+                <tr class="invoice-item">
+                    <td><input type="text" class="designation" value="Pince alignement"></td>
+                    <td><input type="number" class="quantity" value="2" min="0" oninput="updateRow(this)"></td>
+                    <td><input type="number" class="unit-price" value="2000" min="0" oninput="updateRow(this)"></td>
+                    <td class="total-price">4000</td>
+                    <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+                </tr>
+                <tr class="invoice-item">
+                    <td><input type="text" class="designation" value="Raccord"></td>
+                    <td><input type="number" class="quantity" value="6" min="0" oninput="updateRow(this)"></td>
+                    <td><input type="number" class="unit-price" value="1500" min="0" oninput="updateRow(this)"></td>
+                    <td class="total-price">9000</td>
+                    <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+                </tr>
+                <tr class="invoice-item">
+                    <td><input type="text" class="designation" value="Lampe complète"></td>
+                    <td><input type="number" class="quantity" value="2" min="0" oninput="updateRow(this)"></td>
+                    <td><input type="number" class="unit-price" value="60000" min="0" oninput="updateRow(this)"></td>
+                    <td class="total-price">120000</td>
+                    <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+                </tr>
+                <tr class="invoice-item">
+                    <td><input type="text" class="designation" value="Boulon"></td>
+                    <td><input type="number" class="quantity" value="5" min="0" oninput="updateRow(this)"></td>
+                    <td><input type="number" class="unit-price" value="1500" min="0" oninput="updateRow(this)"></td>
+                    <td class="total-price">7500</td>
+                    <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+                </tr>
+                <tr class="invoice-item">
+                    <td><input type="text" class="designation" value="CO"></td>
+                    <td><input type="number" class="quantity" value="2" min="0" oninput="updateRow(this)"></td>
+                    <td><input type="number" class="unit-price" value="1500" min="0" oninput="updateRow(this)"></td>
+                    <td class="total-price">3000</td>
+                    <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+                </tr>
+                <tr class="invoice-item">
+                    <td><input type="text" class="designation" value="Câble 3x70 (m)"></td>
+                    <td><input type="number" class="quantity" value="140" min="0" oninput="updateRow(this)"></td>
+                    <td><input type="number" class="unit-price" value="3000" min="0" oninput="updateRow(this)"></td>
+                    <td class="total-price">420000</td>
+                    <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+                </tr>
+
+                <tr class="fixed-cost-item">
+                    <td>Grue</td>
+                    <td>-</td>
+                    <td><input type="number" class="unit-price fixed-cost" value="200000" min="0" oninput="calculateGrandTotal()"></td>
+                    <td class="total-price fixed-price-cell" data-original-price="200000">200000</td>
+                    <td></td>
+                </tr>
+                <tr class="fixed-cost-item">
+                    <td>MAIN D’ŒUVRE</td>
+                    <td>-</td>
+                    <td><input type="number" class="unit-price fixed-cost" value="250000" min="0" oninput="calculateGrandTotal()"></td>
+                    <td class="total-price fixed-price-cell" data-original-price="250000">250000</td>
+                    <td></td>
+                </tr>
+                <tr class="fixed-cost-item">
+                    <td>Droit de connexion</td>
+                    <td>-</td>
+                    <td><input type="number" class="unit-price fixed-cost" value="600000" min="0" oninput="calculateGrandTotal()"></td>
+                    <td class="total-price fixed-price-cell" data-original-price="600000">600000</td>
+                    <td></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="grand-total-row">
+                    <td colspan="3" style="text-align: right;">TOTAL GÉNÉRAL</td>
+                    <td id="grand-total"></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="action-buttons">
+            <button onclick="addNewItem()">Ajouter un élément</button>
+            <button onclick="printInvoice()">Imprimer / Générer PDF</button>
+        </div>
+
+        <div class="contact-info">
+            <p>Contact : <span id="contact-number">0748185512</span></p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for dynamic calculations and row management
+
+        // Function to format numbers as currency (FCFA)
+        const formatCurrency = (number) => {
+            return number.toLocaleString('fr-FR');
+        };
+
+        // Function to update the total for a single row
+        function updateRow(inputElement) {
+            const row = inputElement.closest('.invoice-item');
+            if (!row) { // It's a fixed cost row, only trigger grand total
+                calculateGrandTotal();
+                return;
+            }
+
+            const quantityInput = row.querySelector('.quantity');
+            const unitPriceInput = row.querySelector('.unit-price');
+            const totalPriceCell = row.querySelector('.total-price');
+
+            const quantity = parseFloat(quantityInput.value) || 0;
+            const unitPrice = parseFloat(unitPriceInput.value) || 0;
+
+            const lineTotal = quantity * unitPrice;
+            totalPriceCell.textContent = formatCurrency(lineTotal);
+
+            calculateGrandTotal();
+        }
+
+        // Function to calculate the grand total of the invoice
+        function calculateGrandTotal() {
+            let grandTotal = 0;
+
+            // Sum up dynamic line items
+            document.querySelectorAll('.invoice-item').forEach(row => {
+                const totalPriceText = row.querySelector('.total-price').textContent;
+                // Remove spaces and non-numeric characters for parsing
+                grandTotal += parseFloat(totalPriceText.replace(/\s/g, '')) || 0;
+            });
+
+            // Add fixed costs
+            document.querySelectorAll('.fixed-cost-item .unit-price.fixed-cost').forEach(input => {
+                grandTotal += parseFloat(input.value) || 0;
+            });
+
+
+            document.getElementById('grand-total').textContent = formatCurrency(grandTotal) + ' FCFA';
+        }
+
+        // Function to add a new blank item row
+        function addNewItem() {
+            const tbody = document.getElementById('invoice-items-body');
+            const newRow = document.createElement('tr');
+            newRow.classList.add('invoice-item');
+            newRow.innerHTML = `
+                <td><input type="text" class="designation" placeholder="Désignation"></td>
+                <td><input type="number" class="quantity" value="1" min="0" oninput="updateRow(this)"></td>
+                <td><input type="number" class="unit-price" value="0" min="0" oninput="updateRow(this)"></td>
+                <td class="total-price">0</td>
+                <td><button class="remove-item-btn" onclick="removeRow(this)">Supprimer</button></td>
+            `;
+            // Find the last .invoice-item to insert before fixed costs, or just append
+            const lastInvoiceItem = tbody.querySelector('.invoice-item:last-of-type');
+            if (lastInvoiceItem) {
+                lastInvoiceItem.after(newRow); // Insert after the last dynamic item
+            } else {
+                tbody.prepend(newRow); // If no dynamic items, add to top
+            }
+
+            // Manually trigger initial calculation for the new row
+            updateRow(newRow.querySelector('.quantity'));
+        }
+
+        // Function to remove an item row
+        function removeRow(buttonElement) {
+            const row = buttonElement.closest('.invoice-item');
+            if (row) {
+                row.remove();
+                calculateGrandTotal(); // Recalculate total after removal
+            }
+        }
+
+        // Function to print the invoice (or generate PDF via browser print dialog)
+        function printInvoice() {
+            window.print();
+        }
+
+        // Initial calculation when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ensure initial total prices for existing items are correct
+            document.querySelectorAll('.invoice-item').forEach(row => {
+                updateRow(row.querySelector('.quantity')); // Trigger update for each initial row
+            });
+            calculateGrandTotal(); // Final recalculation
+        });
+    </script>
+</body>
+</html>
